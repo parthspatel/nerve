@@ -1,5 +1,5 @@
 {
-  "name": "Glyph Dev Container",
+  "name": "Nerve Dev Container",
   "build": {
     "dockerfile": "Dockerfile",
     "args": {
@@ -9,7 +9,7 @@
   "runArgs": ["--cap-add=NET_ADMIN", "--cap-add=NET_RAW"],
   "overrideCommand": false,
   "postCreateCommand": "direnv allow",
-  "postStartCommand": "sudo /usr/local/bin/init-firewall.sh && devenv test",
+  "postStartCommand": "devenv test",
   "waitFor": "postStartCommand",
   "containerEnv": {
     "DEVCONTAINER": "true",
