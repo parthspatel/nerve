@@ -5,16 +5,15 @@
   inputs,
   ...
 }:
-
+let
+  pkgs-unstable = import inputs.nixpkgs-unstable { system = pkgs.stdenv.system; };
+in
 {
   env = {
     NPM_CONFIG_CACHE = ".devenv/npm-cache";
     NPM_CONFIG_PREFIX = ".devenv/npm-global";
-    JAVA_HOME = "${config.languages.java.jdk.package}/lib/openjdk";
-    GRADLE_USER_HOME = ".devenv/gradle";
+    # JAVA_HOME = "${config.languages.java.jdk.package}/lib/openjdk";
     UV_CACHE_DIR = ".devenv/uv-cache";
-    GOPATH = ".devenv/go";
-    GOBIN = ".devenv/go/bin";
   };
 
   packages = [
@@ -40,11 +39,18 @@
     pkgs.playwright-driver
 
     # Java / Flink
-    pkgs.gradle
-    pkgs.maven
+    pkgs.sbt
+    pkgs.scala
+    pkgs.jdk21
 
     # Python tooling
     pkgs.uv # fast Python package manager
+    pkgs.ty
+    pkgs.ruff
+    # Go tooling
+    pkgs.go
+    pkgs.golint
+    pkgs.goreleaser
 
     # Kubernetes tooling
     pkgs.kubectl
@@ -66,32 +72,34 @@
 
     # Observability
     pkgs.grafana-loki # logcli
-    pkgs.promtool # Prometheus rule validation
+    pkgs-unstable.prometheus # Prometheus rule validation
   ];
 
   # ── Go (MLLP ingestion, connectors) ──────────────────────────
   languages.go = {
     enable = true;
-    package = pkgs.go_1_22;
+    package = pkgs.go;
   };
 
   # ── Java 21 LTS (Flink processing, HAPI HL7v2) ──────────────
   languages.java = {
     enable = true;
     jdk.package = pkgs.jdk21;
-    gradle = {
-      enable = true;
-    };
-    maven.enable = true;
+  };
+  languages.scala = {
+    enable = true;
+    package = pkgs.scala;
+    sbt.enable = true;
+    sbt.package = pkgs.sbt;
   };
 
   # ── Python 3.12 (Splink MPI, SQLMesh, DICOM extraction) ─────
   languages.python = {
     enable = true;
-    package = pkgs.python312;
     uv = {
       enable = true;
-      sync.enable = true;
+      # sync.enable = true;
+      package = pkgs.uv;
     };
   };
 
