@@ -13,7 +13,7 @@
 | **GitHub** | [apache/flink](https://github.com/apache/flink) (~24K stars) |
 | **Latest Version** | Flink 1.20.x (2025), K8s Operator v1.13.0 |
 | **License** | Apache 2.0 |
-| **Language** | Java/Scala (JVM-based) |
+| **Language** | Java (JVM-based) |
 | **ASF Status** | Apache Top-Level Project |
 | **Nerve Role** | Real-time HL7 v2.x parsing, validation, enrichment, and routing with exactly-once semantics |
 

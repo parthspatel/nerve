@@ -9,13 +9,13 @@
 | Layer | Language | Runtime | Rationale |
 |-------|----------|---------|-----------|
 | **MLLP Ingestion** | Go 1.22+ | Native binary | Goroutine-per-connection model, sub-ms ACK latency, 20-50 MB container, Google mllp reference |
-| **Stream Processing** | Java 21 (LTS) | JVM (Flink) | HAPI HL7v2 library requires JVM, Flink native, Maven ecosystem for healthcare libs |
+| **Stream Processing** | Java 21 (LTS) | JVM (Flink) | HAPI HL7v2 library requires JVM, Flink native, sbt + Maven Central for healthcare libs |
 | **Batch ETL / MPI** | Python 3.12+ | CPython | Splink (probabilistic MPI), PySpark, SQLMesh CLI, data science tooling |
 | **SQL Transforms** | SQL (ANSI + Spark dialect) | SQLMesh / Trino / Spark | Declarative transforms on Delta Lake, accessible to clinical analysts |
 | **Clinical Mapping UI** | TypeScript 5.x | Node.js 22 (LTS) | React mapping studio, MPI review UI, modern frontend toolchain |
 | **Visual Pipelines** | Apache Hop XML/JSON | Hop Engine / Beam | No-code visual definitions, 400+ plugins, executed on Flink/Spark via Beam |
 | **Infrastructure** | Nix + YAML + HCL | devenv / Helm / Terraform | Reproducible dev environments, K8s manifests, GitOps declarations |
-| **Connectors** | Go / Python | Native / CPython | Go for high-throughput connectors (FHIR poller), Python for document/DICOM metadata |
+| **Connectors** | Go / Python | Native / CPython | Go for high-throughput connectors (FHIR poller, OnBase adapter), Python for DICOM metadata |
 | **Schema Definitions** | Avro / JSON Schema | Apicurio Registry | Kafka topic schemas, backwards-compatible evolution |
 | **Scripts & Glue** | Bash / Python | Shell | CI/CD scripts, one-off data utilities, devenv hooks |
 
@@ -49,7 +49,7 @@ Java is required for the Flink processing layer due to the HAPI HL7v2 library:
 
 **Why Java over Kotlin**: While Kotlin offers syntactic improvements, Java 21 with records, sealed classes, and pattern matching closes the gap. The HAPI library and Flink documentation are Java-first. Staying with Java reduces context-switching cost for contributors from the healthcare informatics community (heavily Java-oriented).
 
-**Build system**: Gradle 8.x with the Flink Kubernetes Operator for job deployment.
+**Build system**: sbt 1.x with the Flink Kubernetes Operator for job deployment.
 
 ### Python 3.12 (Batch MPI, Analytics, Data Science)
 
@@ -118,14 +118,14 @@ nerve/
 ├── connectors/
 │   ├── epic-fhir-poller/       # Go
 │   │   └── go.mod
-│   ├── onbase-adapter/         # Python
-│   │   └── pyproject.toml
+│   ├── onbase-adapter/         # Go
+│   │   └── go.mod
 │   ├── dicom-proxy/            # Python (Orthanc plugin)
 │   │   └── pyproject.toml
 │   └── generic-mllp/           # Go
 │       └── go.mod
 ├── processing/         # Java 21
-│   ├── build.gradle.kts
+│   ├── build.sbt
 │   ├── hl7-parser/
 │   ├── enrichment/
 │   └── document-processor/
@@ -165,6 +165,7 @@ All language versions are pinned in `devenv.nix` for reproducibility:
 |----------|-------------|-----------------|
 | Go | `languages.go.package` | Latest stable (1.22+) |
 | Java | `languages.java.jdk.package` | LTS only (21) |
+| sbt | `pkgs.sbt` in `packages` | Latest stable (1.x) |
 | Python | `languages.python.package` | Latest stable (3.12+) |
 | Node.js | `languages.javascript.package` | LTS only (22) |
 | Rust | `languages.rust.channel` | Stable (for tooling only) |
