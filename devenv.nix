@@ -134,7 +134,7 @@ in
       echo "==> Linting Go..."
       (cd ingestion && go vet ./...) 2>/dev/null || true
       echo "==> Linting Java..."
-      (cd processing && gradle check --no-daemon) 2>/dev/null || true
+      (cd processing && sbt compile) 2>/dev/null || true
       echo "==> Linting Python..."
       (cd mpi/splink-jobs && uv run ruff check .) 2>/dev/null || true
       echo "==> Linting TypeScript..."
@@ -147,7 +147,7 @@ in
       echo "==> Testing Go..."
       (cd ingestion && go test ./...) 2>/dev/null || true
       echo "==> Testing Java..."
-      (cd processing && gradle test --no-daemon) 2>/dev/null || true
+      (cd processing && sbt test) 2>/dev/null || true
       echo "==> Testing Python..."
       (cd mpi/splink-jobs && uv run pytest) 2>/dev/null || true
       echo "==> Testing TypeScript..."
@@ -218,6 +218,7 @@ in
     echo "  ─────────────────────────────────"
     echo "  Go:         $(go version 2>/dev/null | cut -d' ' -f3 || echo 'not found')"
     echo "  Java:       $(java --version 2>/dev/null | head -1 || echo 'not found')"
+    echo "  sbt:        $(sbt --version 2>/dev/null | grep 'sbt script' | cut -d' ' -f4 || echo 'not found')"
     echo "  Python:     $(python --version 2>/dev/null || echo 'not found')"
     echo "  Node.js:    $(node --version 2>/dev/null || echo 'not found')"
     echo "  Rust:       $(rustc --version 2>/dev/null || echo 'not found')"
@@ -273,7 +274,7 @@ in
       #     elif [[ "$file_path" =~ \.go$ ]]; then
       #       go test ./...
       #     elif [[ "$file_path" =~ \.java$ ]]; then
-      #       gradle test --no-daemon
+      #       sbt test
       #     elif [[ "$file_path" =~ \.py$ ]]; then
       #       uv run pytest
       #     fi
