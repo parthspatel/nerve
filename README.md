@@ -395,18 +395,6 @@ nerve/
 
 -----
 
-## Contributing
-
-See <CONTRIBUTING.md> for development setup, coding standards, and PR guidelines.
-
------
-
-## License
-
-Apache 2.0 — see <LICENSE> for details.
-
------
-
 <p align="center">
   <strong>Nerve</strong> — because your revenue cycle shouldn't wait for your integration team.
 </p>
